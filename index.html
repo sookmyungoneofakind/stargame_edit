@@ -9,21 +9,22 @@
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         body {
-            /* 픽셀아트 밤 창가 배경 */
+            /* 픽셀아트 밤 창가 배경 이미지 적용 */
+            background-image: url('https://i.imgur.com/your-image-url.jpg'); /* 여기에 제공된 이미지 URL을 넣으세요. 예: https://i.imgur.com/abcde.jpg */
             background-image: url('http://googleusercontent.com/image_generation_content/0');
             background-size: cover; /* 배경이 화면 전체를 덮도록 */
             background-repeat: no-repeat;
             background-position: center center;
-            background-color: #1a1a2e; /* 이미지가 로드되기 전이나 로드 실패 시 보일 기본 배경색 (어두운 남색) */
+            background-color: #1a1a2e; /* 이미지가 로드되지 않을 때를 위한 배경색 */
             
             color: #ffffff;
-            font-family: 'Press Start 2P', sans-serif; /* 도트 느낌의 픽셀 폰트 */
+            font-family: 'Press Start 2P', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden; /* 게임 영역 밖으로 나가는 요소 숨기기 */
+            overflow: hidden;
             text-align: center;
         }
 
@@ -31,11 +32,12 @@
         #game-container {
             width: 90%;
             max-width: 600px;
-            background-color: rgba(45, 39, 88, 0.85); /* 밤에 어울리는 약간 투명한 보라색 */
+            /* 배경이 비치도록 반투명한 어두운 보라색으로 변경 */
+            background-color: rgba(45, 39, 88, 0.85); 
             border: 4px solid #000;
-            box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.5); /* 픽셀 아트 느낌의 그림자 */
+            box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.5);
             padding: 20px;
-            border-radius: 15px; /* 약간 둥글게 */
+            border-radius: 15px;
         }
 
         /* --- 상단 정보 바 (제목, 시간, 점수) --- */
@@ -45,7 +47,7 @@
         }
 
         h1 {
-            font-size: 1.5em; /* 제목 크기 */
+            font-size: 1.5em;
             margin: 0 0 15px 0;
             text-shadow: 3px 3px 0 #000;
             color: #ffeb3b; /* 밝은 노란색 (달빛 느낌) */
@@ -70,10 +72,11 @@
         #game-area {
             position: relative;
             width: 100%;
-            height: 400px; /* 모기가 날아다니는 높이 */
-            background: linear-gradient(to bottom, #2c3e50, #465160); /* 어두운 밤하늘 그라데이션 */
+            height: 400px;
+            /* 어두운 밤하늘 그라데이션 */
+            background: linear-gradient(to bottom, #2c3e50, #465160); 
             border-radius: 10px;
-            overflow: hidden; /* 영역을 벗어나는 모기 숨기기 */
+            overflow: hidden;
             border: 3px solid #000;
             cursor: crosshair; /* 조준선 커서 */
         }
@@ -81,34 +84,21 @@
         /* --- 모기 스타일 --- */
         .mosquito {
             position: absolute;
-            font-size: 2em; /* 모기 이모지 크기 */
+            font-size: 2em;
             cursor: pointer;
-            user-select: none; /* 드래그 방지 */
+            user-select: none;
             animation-name: fly;
             animation-timing-function: linear;
-            /* 애니메이션은 JavaScript에서 동적으로 설정 */
         }
 
-        /* 날아가는 애니메이션 (더 불규칙하게 수정) */
+        /* 날아가는 애니메이션 (불규칙하게 수정) */
         @keyframes fly {
-            from {
-                transform: translate(-50px, 20px) rotate(15deg);
-            }
-            20% {
-                transform: translate(100px, 150px) rotate(-20deg);
-            }
-            40% {
-                transform: translate(250px, 80px) rotate(25deg);
-            }
-            60% {
-                transform: translate(400px, 180px) rotate(-10deg);
-            }
-            80% {
-                transform: translate(550px, 100px) rotate(5deg);
-            }
-            to {
-                transform: translate(650px, 120px) rotate(10deg);
-            }
+            from { transform: translate(-50px, 20px) rotate(15deg); }
+            20% { transform: translate(100px, 150px) rotate(-20deg); }
+            40% { transform: translate(250px, 80px) rotate(25deg); }
+            60% { transform: translate(400px, 180px) rotate(-10deg); }
+            80% { transform: translate(550px, 100px) rotate(5deg); }
+            to { transform: translate(650px, 120px) rotate(10deg); }
         }
         
         /* --- "Zap!" 메시지 스타일 --- */
@@ -120,16 +110,16 @@
             font-size: 2.2em;
             font-weight: bold;
             color: #fca311; /* 전기튀는 느낌의 주황색 */
-            text-shadow: 3px 3px 0 #e85d04; /* 더 진한 주황색 그림자 */
+            text-shadow: 3px 3px 0 #e85d04;
             opacity: 0;
             transition: all 0.5s ease;
-            pointer-events: none; /* 메시지가 모기 클릭을 방해하지 않도록 설정 */
+            pointer-events: none;
         }
 
         /* --- 하단 컨트롤 영역 (버튼, 결과 메시지) --- */
         #controls {
             margin-top: 20px;
-            height: 60px; /* 버튼과 메시지 공간 확보 */
+            height: 60px;
         }
 
         #start-button {
@@ -189,7 +179,7 @@
         let score = 0;
         let timeLeft = 20;
         let gameTimerId = null;
-        let mosquitoGeneratorId = null; // 이름 변경
+        let mosquitoGeneratorId = null;
         let isGameRunning = false;
 
         startButton.addEventListener('click', startGame);
@@ -207,21 +197,20 @@
             startButton.style.display = 'none';
             
             gameTimerId = setInterval(updateTimer, 1000);
-            mosquitoGeneratorId = setInterval(createMosquito, 600); // 이름 변경
+            mosquitoGeneratorId = setInterval(createMosquito, 600);
         }
 
         function updateTimer() {
             timeLeft--;
             timerDisplay.textContent = `Time: ${timeLeft}`;
-
             if (timeLeft <= 0) {
                 endGame();
             }
         }
         
-        function createMosquito() { // 이름 변경
+        function createMosquito() {
             const mosquito = document.createElement('div');
-            mosquito.classList.add('mosquito'); // 클래스 이름 변경
+            mosquito.classList.add('mosquito');
             mosquito.textContent = '🦟';
 
             const randomY = Math.random() * (gameArea.clientHeight - 50);
@@ -230,8 +219,7 @@
             mosquito.style.top = `${randomY}px`;
             mosquito.style.animationDuration = `${randomDuration}s`;
             
-            mosquito.addEventListener('click', catchMosquito); // 이름 변경
-
+            mosquito.addEventListener('click', catchMosquito);
             gameArea.appendChild(mosquito);
 
             setTimeout(() => {
@@ -241,38 +229,35 @@
             }, randomDuration * 1000);
         }
         
-        function catchMosquito(event) { // 이름 변경
+        function catchMosquito(event) {
             if (!isGameRunning) return;
-
             score++;
             scoreDisplay.textContent = `Score: ${score}`;
-
             showCaughtMessage();
             event.target.remove();
         }
 
         function showCaughtMessage() {
-            catchMessage.textContent = 'Zap!'; // 텍스트 변경
+            catchMessage.textContent = 'Zap!';
             catchMessage.style.opacity = '1';
-            catchMessage.style.transform = 'translate(-50%, -50%) scale(1.2)'; // 약간 커지는 효과 추가
+            catchMessage.style.transform = 'translate(-50%, -50%) scale(1.2)';
             setTimeout(() => {
                 catchMessage.style.opacity = '0';
-                catchMessage.style.transform = 'translate(-50%, -50%) scale(1)'; // 원래 크기로
+                catchMessage.style.transform = 'translate(-50%, -50%) scale(1)';
             }, 500);
         }
 
         function endGame() {
             isGameRunning = false;
-            
             clearInterval(gameTimerId);
-            clearInterval(mosquitoGeneratorId); // 이름 변경
+            clearInterval(mosquitoGeneratorId);
             
             resultMessage.textContent = `Your Score: ${score}`;
             
             startButton.textContent = "다시 시작";
             startButton.style.display = 'block';
             
-            document.querySelectorAll('.mosquito').forEach(mosquito => mosquito.remove()); // 클래스 이름 변경
+            document.querySelectorAll('.mosquito').forEach(mosquito => mosquito.remove());
         }
     </script>
 </body>
