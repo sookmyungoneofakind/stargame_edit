@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⭐ 별똥별 잡기 게임</title>
+    <title>🦟 잠자리 잡기</title>
     <style>
         /* --- 기본 스타일 및 폰트 설정 --- */
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         body {
-            background-color: #1a237e; /* 어두운 네이비톤 밤하늘 배경 */
+            background-color: #4c3d3d; /* 해질녘의 어두운 흙색 */
             color: #ffffff;
             font-family: 'Press Start 2P', sans-serif; /* 도트 느낌의 픽셀 폰트 */
             display: flex;
@@ -25,9 +25,9 @@
         #game-container {
             width: 90%;
             max-width: 600px;
-            background-color: #283593; /* 배경보다 살짝 밝은 네이비 */
+            background-color: #a0522d; /* 따뜻한 갈색톤 */
             border: 4px solid #000;
-            box-shadow: 8px 8px 0px #1a237e; /* 픽셀 아트 느낌의 그림자 */
+            box-shadow: 8px 8px 0px #4c3d3d; /* 픽셀 아트 느낌의 그림자 */
             padding: 20px;
             border-radius: 15px; /* 약간 둥글게 */
         }
@@ -42,6 +42,7 @@
             font-size: 1.5em; /* 제목 크기 */
             margin: 0 0 15px 0;
             text-shadow: 3px 3px 0 #000;
+            color: #ffc107; /* 노을 느낌의 노란색 */
         }
 
         #stats {
@@ -51,11 +52,11 @@
         }
         
         #stats span {
-            background-color: #3f51b5;
+            background-color: #e67e22; /* 주황색 */
             padding: 10px 15px;
             border-radius: 8px;
             border: 3px solid #000;
-            box-shadow: 4px 4px 0px #1a237e; /* 픽셀 보더 느낌 */
+            box-shadow: 4px 4px 0px #8b4513; /* 어두운 갈색 그림자 */
             min-width: 120px;
         }
 
@@ -63,46 +64,55 @@
         #game-area {
             position: relative;
             width: 100%;
-            height: 400px; /* 별이 떨어지는 높이 */
-            background: linear-gradient(to bottom, #1a237e, #303f9f); /* 밤하늘 그라데이션 */
+            height: 400px; /* 잠자리가 날아다니는 높이 */
+            background: linear-gradient(to bottom, #ff8c00, #ffd700); /* 주황 ~ 금색의 석양 그라데이션 */
             border-radius: 10px;
-            overflow: hidden; /* 영역을 벗어나는 별 숨기기 */
+            overflow: hidden; /* 영역을 벗어나는 잠자리 숨기기 */
             border: 3px solid #000;
         }
 
-        /* --- 별똥별 스타일 --- */
-        .star {
+        /* --- 잠자리 스타일 --- */
+        .dragonfly {
             position: absolute;
-            font-size: 2em; /* 별 이모지 크기 */
+            font-size: 2em; /* 잠자리 이모지 크기 */
             cursor: pointer;
             user-select: none; /* 드래그 방지 */
-            animation-name: fall;
+            animation-name: fly;
             animation-timing-function: linear;
             /* 애니메이션은 JavaScript에서 동적으로 설정 */
         }
 
-        /* 떨어지는 애니메이션 */
-        @keyframes fall {
+        /* 날아가는 애니메이션 */
+        @keyframes fly {
             from {
-                transform: translateY(-50px); /* 위에서 시작 */
+                transform: translate(-50px, 20px) rotate(10deg); /* 왼쪽 위에서 시작 */
+            }
+            25% {
+                transform: translate(150px, 100px) rotate(-10deg);
+            }
+            50% {
+                transform: translate(300px, 50px) rotate(15deg);
+            }
+            75% {
+                transform: translate(450px, 150px) rotate(-5deg);
             }
             to {
-                transform: translateY(450px); /* 화면 아래로 사라짐 */
+                transform: translate(650px, 80px) rotate(5deg); /* 화면 오른쪽으로 사라짐 */
             }
         }
         
-        /* --- "Make a wish!" 메시지 스타일 --- */
-        #wish-message {
+        /* --- "Catch it!" 메시지 스타일 --- */
+        #catch-message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 1.8em;
-            color: #ffeb3b; /* 노란색 */
-            text-shadow: 3px 3px 0 #000;
+            color: #ffffff; /* 흰색 */
+            text-shadow: 3px 3px 0 #d32f2f; /* 붉은색 그림자 */
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
-            pointer-events: none; /* 메시지가 별 클릭을 방해하지 않도록 설정 */
+            pointer-events: none; /* 메시지가 잠자리 클릭을 방해하지 않도록 설정 */
         }
 
         /* --- 하단 컨트롤 영역 (버튼, 결과 메시지) --- */
@@ -115,18 +125,18 @@
             font-family: 'Press Start 2P', sans-serif;
             font-size: 1.2em;
             padding: 15px 30px;
-            background-color: #4caf50; /* 초록색 */
+            background-color: #d32f2f; /* 붉은색 (고추잠자리 느낌) */
             color: white;
             border: 3px solid #000;
             border-radius: 10px;
             cursor: pointer;
-            box-shadow: 6px 6px 0px #1a237e; /* 픽셀 보더 느낌 */
+            box-shadow: 6px 6px 0px #8b4513; /* 어두운 갈색 그림자 */
             transition: all 0.1s ease;
         }
         
         #start-button:active {
             transform: translate(3px, 3px);
-            box-shadow: 3px 3px 0px #1a237e;
+            box-shadow: 3px 3px 0px #8b4513;
         }
 
         #result-message {
@@ -139,21 +149,18 @@
 <body>
 
     <div id="game-container">
-        <!-- 상단: 제목, 시간, 점수판 -->
         <header id="info-bar">
-            <h1>⭐ 별똥별 잡기 게임</h1>
+            <h1>🦟 잠자리 잡기</h1>
             <div id="stats">
                 <span id="timer">Time: 20</span>
                 <span id="score">Score: 0</span>
             </div>
         </header>
 
-        <!-- 중앙: 별이 떨어지는 게임 영역 -->
         <main id="game-area">
-            <p id="wish-message">Make a wish!</p>
+            <p id="catch-message">Catch it!</p>
         </main>
 
-        <!-- 하단: 게임 시작 버튼 및 결과 메시지 -->
         <footer id="controls">
             <button id="start-button">게임 시작</button>
             <p id="result-message"></p>
@@ -167,17 +174,16 @@
         const timerDisplay = document.getElementById('timer');
         const startButton = document.getElementById('start-button');
         const resultMessage = document.getElementById('result-message');
-        const wishMessage = document.getElementById('wish-message');
+        const catchMessage = document.getElementById('catch-message');
 
         // --- 게임 상태 변수 ---
         let score = 0;
         let timeLeft = 20;
         let gameTimerId = null; // 게임 타이머 setInterval ID
-        let starGeneratorId = null; // 별 생성 setInterval ID
+        let dragonflyGeneratorId = null; // 잠자리 생성 setInterval ID
         let isGameRunning = false;
 
         // --- 이벤트 리스너 ---
-        // "게임 시작" 버튼 클릭 시 startGame 함수 호출
         startButton.addEventListener('click', startGame);
 
         /**
@@ -198,11 +204,8 @@
             startButton.style.display = 'none'; // 시작 버튼 숨기기
             
             // 3. 게임 루프 시작
-            // 1초마다 updateTimer 함수를 실행하여 시간 감소
             gameTimerId = setInterval(updateTimer, 1000);
-            
-            // 0.5초마다 createStar 함수를 실행하여 별 생성
-            starGeneratorId = setInterval(createStar, 500);
+            dragonflyGeneratorId = setInterval(createDragonfly, 600); // 잠자리는 조금 더 뜸하게 생성
         }
 
         /**
@@ -212,65 +215,64 @@
             timeLeft--; // 시간 1초 감소
             timerDisplay.textContent = `Time: ${timeLeft}`;
 
-            // 시간이 0이 되면 게임 종료
             if (timeLeft <= 0) {
                 endGame();
             }
         }
         
         /**
-         * 별똥별을 생성하는 함수
+         * 잠자리를 생성하는 함수
          */
-        function createStar() {
-            const star = document.createElement('div');
-            star.classList.add('star');
-            star.textContent = '⭐';
+        function createDragonfly() {
+            const dragonfly = document.createElement('div');
+            dragonfly.classList.add('dragonfly');
+            dragonfly.textContent = '🦟';
 
-            // 별이 떨어지는 속도와 위치를 랜덤으로 설정
-            const randomX = Math.random() * (gameArea.clientWidth - 40); // 게임 영역 너비 안에서 랜덤 X좌표
-            const randomDuration = Math.random() * 2 + 2; // 2초 ~ 4초 사이의 랜덤한 낙하 시간
+            // 잠자리가 날아다니는 속도와 위치를 랜덤으로 설정
+            const randomY = Math.random() * (gameArea.clientHeight - 50); // 게임 영역 높이 안에서 랜덤 Y좌표
+            const randomDuration = Math.random() * 2 + 3; // 3초 ~ 5초 사이의 랜덤한 비행 시간
 
-            star.style.left = `${randomX}px`;
-            star.style.animationDuration = `${randomDuration}s`;
+            dragonfly.style.top = `${randomY}px`;
+            dragonfly.style.animationDuration = `${randomDuration}s`;
             
-            // 별 클릭 시 점수 획득 이벤트 추가
-            star.addEventListener('click', catchStar);
+            // 잠자리 클릭 시 점수 획득 이벤트 추가
+            dragonfly.addEventListener('click', catchDragonfly);
 
-            gameArea.appendChild(star);
+            gameArea.appendChild(dragonfly);
 
-            // 별이 화면 밖으로 사라지면 DOM에서 제거 (메모리 관리)
+            // 잠자리가 화면 밖으로 사라지면 DOM에서 제거 (메모리 관리)
             setTimeout(() => {
-                if (star.parentNode) {
-                    star.remove();
+                if (dragonfly.parentNode) {
+                    dragonfly.remove();
                 }
             }, randomDuration * 1000);
         }
         
         /**
-         * 별을 클릭했을 때 호출되는 함수
+         * 잠자리를 클릭했을 때 호출되는 함수
          * @param {Event} event - 클릭 이벤트 객체
          */
-        function catchStar(event) {
-            if (!isGameRunning) return; // 게임이 실행 중이 아닐 때는 점수 획득 불가
+        function catchDragonfly(event) {
+            if (!isGameRunning) return;
 
             score++; // 점수 1 증가
             scoreDisplay.textContent = `Score: ${score}`;
 
-            showWish(); // "Make a wish!" 메시지 표시
+            showCatchMessage(); // "Catch it!" 메시지 표시
 
-            // 클릭된 별은 즉시 제거
+            // 클릭된 잠자리는 즉시 제거
             event.target.remove();
         }
 
         /**
-         * "Make a wish!" 메시지를 잠시 보여주는 함수
+         * "Catch it!" 메시지를 잠시 보여주는 함수
          */
-        function showWish() {
-            wishMessage.style.opacity = '1';
-            // 1초 후에 메시지를 다시 투명하게 만듦
+        function showCatchMessage() {
+            catchMessage.style.opacity = '1';
+            // 0.5초 후에 메시지를 다시 투명하게 만듦
             setTimeout(() => {
-                wishMessage.style.opacity = '0';
-            }, 1000);
+                catchMessage.style.opacity = '0';
+            }, 500);
         }
 
         /**
@@ -281,7 +283,7 @@
             
             // 1. 모든 타이머 정지
             clearInterval(gameTimerId);
-            clearInterval(starGeneratorId);
+            clearInterval(dragonflyGeneratorId);
             
             // 2. 게임 종료 메시지 표시
             resultMessage.textContent = `Your Score: ${score}`;
@@ -290,10 +292,9 @@
             startButton.textContent = "다시 시작";
             startButton.style.display = 'block';
             
-            // 4. 화면에 남아있는 모든 별 제거
-            document.querySelectorAll('.star').forEach(star => star.remove());
+            // 4. 화면에 남아있는 모든 잠자리 제거
+            document.querySelectorAll('.dragonfly').forEach(dragonfly => dragonfly.remove());
         }
     </script>
 </body>
 </html>
-
