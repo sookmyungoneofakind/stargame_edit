@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⭐ 별똥별 잡기 게임</title>
+    <style>
+        /* --- 기본 스타일 및 폰트 설정 --- */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #1a237e; /* 어두운 네이비톤 밤하늘 배경 */
+            color: #ffffff;
+            font-family: 'Press Start 2P', sans-serif; /* 도트 느낌의 픽셀 폰트 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* 게임 영역 밖으로 나가는 요소 숨기기 */
+            text-align: center;
+        }
+
+        /* --- 게임 전체 컨테이너 --- */
+        #game-container {
+            width: 90%;
+            max-width: 600px;
+            background-color: #283593; /* 배경보다 살짝 밝은 네이비 */
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0px #1a237e; /* 픽셀 아트 느낌의 그림자 */
+            padding: 20px;
+            border-radius: 15px; /* 약간 둥글게 */
+        }
+
+        /* --- 상단 정보 바 (제목, 시간, 점수) --- */
+        #info-bar {
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 1.5em; /* 제목 크기 */
+            margin: 0 0 15px 0;
+            text-shadow: 3px 3px 0 #000;
+        }
+
+        #stats {
+            display: flex;
+            justify-content: space-around;
+            font-size: 1.2em;
+        }
+        
+        #stats span {
+            background-color: #3f51b5;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px #1a237e; /* 픽셀 보더 느낌 */
+            min-width: 120px;
+        }
+
+        /* --- 중앙 게임 영역 --- */
+        #game-area {
+            position: relative;
+            width: 100%;
+            height: 400px; /* 별이 떨어지는 높이 */
+            background: linear-gradient(to bottom, #1a237e, #303f9f); /* 밤하늘 그라데이션 */
+            border-radius: 10px;
+            overflow: hidden; /* 영역을 벗어나는 별 숨기기 */
+            border: 3px solid #000;
+        }
+
+        /* --- 별똥별 스타일 --- */
+        .star {
+            position: absolute;
+            font-size: 2em; /* 별 이모지 크기 */
+            cursor: pointer;
+            user-select: none; /* 드래그 방지 */
+            animation-name: fall;
+            animation-timing-function: linear;
+            /* 애니메이션은 JavaScript에서 동적으로 설정 */
+        }
+
+        /* 떨어지는 애니메이션 */
+        @keyframes fall {
+            from {
+                transform: translateY(-50px); /* 위에서 시작 */
+            }
+            to {
+                transform: translateY(450px); /* 화면 아래로 사라짐 */
+            }
+        }
+        
+        /* --- "Make a wish!" 메시지 스타일 --- */
+        #wish-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8em;
+            color: #ffeb3b; /* 노란색 */
+            text-shadow: 3px 3px 0 #000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none; /* 메시지가 별 클릭을 방해하지 않도록 설정 */
+        }
+
+        /* --- 하단 컨트롤 영역 (버튼, 결과 메시지) --- */
+        #controls {
+            margin-top: 20px;
+            height: 60px; /* 버튼과 메시지 공간 확보 */
+        }
+
+        #start-button {
+            font-family: 'Press Start 2P', sans-serif;
+            font-size: 1.2em;
+            padding: 15px 30px;
+            background-color: #4caf50; /* 초록색 */
+            color: white;
+            border: 3px solid #000;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 6px 6px 0px #1a237e; /* 픽셀 보더 느낌 */
+            transition: all 0.1s ease;
+        }
+        
+        #start-button:active {
+            transform: translate(3px, 3px);
+            box-shadow: 3px 3px 0px #1a237e;
+        }
+
+        #result-message {
+            font-size: 1.5em;
+            color: #ffeb3b;
+            text-shadow: 3px 3px 0 #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- 상단: 제목, 시간, 점수판 -->
+        <header id="info-bar">
+            <h1>⭐ 별똥별 잡기 게임</h1>
+            <div id="stats">
+                <span id="timer">Time: 20</span>
+                <span id="score">Score: 0</span>
+            </div>
+        </header>
+
+        <!-- 중앙: 별이 떨어지는 게임 영역 -->
+        <main id="game-area">
+            <p id="wish-message">Make a wish!</p>
+        </main>
+
+        <!-- 하단: 게임 시작 버튼 및 결과 메시지 -->
+        <footer id="controls">
+            <button id="start-button">게임 시작</button>
+            <p id="result-message"></p>
+        </footer>
+    </div>
+
+    <script>
+        // --- DOM 요소 가져오기 ---
+        const gameArea = document.getElementById('game-area');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const startButton = document.getElementById('start-button');
+        const resultMessage = document.getElementById('result-message');
+        const wishMessage = document.getElementById('wish-message');
+
+        // --- 게임 상태 변수 ---
+        let score = 0;
+        let timeLeft = 20;
+        let gameTimerId = null; // 게임 타이머 setInterval ID
+        let starGeneratorId = null; // 별 생성 setInterval ID
+        let isGameRunning = false;
+
+        // --- 이벤트 리스너 ---
+        // "게임 시작" 버튼 클릭 시 startGame 함수 호출
+        startButton.addEventListener('click', startGame);
+
+        /**
+         * 게임을 시작하는 함수
+         */
+        function startGame() {
+            if (isGameRunning) return; // 게임이 이미 실행 중이면 아무것도 하지 않음
+
+            // 1. 게임 상태 초기화
+            isGameRunning = true;
+            score = 0;
+            timeLeft = 20;
+            
+            // 2. UI 초기화
+            scoreDisplay.textContent = `Score: ${score}`;
+            timerDisplay.textContent = `Time: ${timeLeft}`;
+            resultMessage.textContent = '';
+            startButton.style.display = 'none'; // 시작 버튼 숨기기
+            
+            // 3. 게임 루프 시작
+            // 1초마다 updateTimer 함수를 실행하여 시간 감소
+            gameTimerId = setInterval(updateTimer, 1000);
+            
+            // 0.5초마다 createStar 함수를 실행하여 별 생성
+            starGeneratorId = setInterval(createStar, 500);
+        }
+
+        /**
+         * 게임 타이머를 업데이트하는 함수
+         */
+        function updateTimer() {
+            timeLeft--; // 시간 1초 감소
+            timerDisplay.textContent = `Time: ${timeLeft}`;
+
+            // 시간이 0이 되면 게임 종료
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+        
+        /**
+         * 별똥별을 생성하는 함수
+         */
+        function createStar() {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.textContent = '⭐';
+
+            // 별이 떨어지는 속도와 위치를 랜덤으로 설정
+            const randomX = Math.random() * (gameArea.clientWidth - 40); // 게임 영역 너비 안에서 랜덤 X좌표
+            const randomDuration = Math.random() * 2 + 2; // 2초 ~ 4초 사이의 랜덤한 낙하 시간
+
+            star.style.left = `${randomX}px`;
+            star.style.animationDuration = `${randomDuration}s`;
+            
+            // 별 클릭 시 점수 획득 이벤트 추가
+            star.addEventListener('click', catchStar);
+
+            gameArea.appendChild(star);
+
+            // 별이 화면 밖으로 사라지면 DOM에서 제거 (메모리 관리)
+            setTimeout(() => {
+                if (star.parentNode) {
+                    star.remove();
+                }
+            }, randomDuration * 1000);
+        }
+        
+        /**
+         * 별을 클릭했을 때 호출되는 함수
+         * @param {Event} event - 클릭 이벤트 객체
+         */
+        function catchStar(event) {
+            if (!isGameRunning) return; // 게임이 실행 중이 아닐 때는 점수 획득 불가
+
+            score++; // 점수 1 증가
+            scoreDisplay.textContent = `Score: ${score}`;
+
+            showWish(); // "Make a wish!" 메시지 표시
+
+            // 클릭된 별은 즉시 제거
+            event.target.remove();
+        }
+
+        /**
+         * "Make a wish!" 메시지를 잠시 보여주는 함수
+         */
+        function showWish() {
+            wishMessage.style.opacity = '1';
+            // 1초 후에 메시지를 다시 투명하게 만듦
+            setTimeout(() => {
+                wishMessage.style.opacity = '0';
+            }, 1000);
+        }
+
+        /**
+         * 게임을 종료하는 함수
+         */
+        function endGame() {
+            isGameRunning = false;
+            
+            // 1. 모든 타이머 정지
+            clearInterval(gameTimerId);
+            clearInterval(starGeneratorId);
+            
+            // 2. 게임 종료 메시지 표시
+            resultMessage.textContent = `Your Score: ${score}`;
+            
+            // 3. "다시 시작" 버튼 표시
+            startButton.textContent = "다시 시작";
+            startButton.style.display = 'block';
+            
+            // 4. 화면에 남아있는 모든 별 제거
+            document.querySelectorAll('.star').forEach(star => star.remove());
+        }
+    </script>
+</body>
+</html>
+
