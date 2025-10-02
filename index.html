@@ -9,7 +9,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         body {
-            background-color: #4c3d3d; /* 해질녘의 어두운 흙색 */
+            /* 픽셀아트 여름날 논밭 배경 */
+            background-image: url('https://i.imgur.com/example-rice-field-pixelart.png'); /* 여기에 실제 픽셀아트 논밭 이미지 URL을 넣어주세요 */
+            background-size: cover; /* 배경이 화면 전체를 덮도록 */
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-color: #8ac44a; /* 이미지가 로드되기 전이나 로드 실패 시 보일 기본 배경색 (논밭 녹색) */
+            
             color: #ffffff;
             font-family: 'Press Start 2P', sans-serif; /* 도트 느낌의 픽셀 폰트 */
             display: flex;
@@ -25,9 +31,9 @@
         #game-container {
             width: 90%;
             max-width: 600px;
-            background-color: #a0522d; /* 따뜻한 갈색톤 */
+            background-color: rgba(60, 179, 113, 0.85); /* 논밭에 어울리는 약간 투명한 녹색 */
             border: 4px solid #000;
-            box-shadow: 8px 8px 0px #4c3d3d; /* 픽셀 아트 느낌의 그림자 */
+            box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.5); /* 픽셀 아트 느낌의 그림자 */
             padding: 20px;
             border-radius: 15px; /* 약간 둥글게 */
         }
@@ -42,7 +48,7 @@
             font-size: 1.5em; /* 제목 크기 */
             margin: 0 0 15px 0;
             text-shadow: 3px 3px 0 #000;
-            color: #ffc107; /* 노을 느낌의 노란색 */
+            color: #ffeb3b; /* 밝은 노란색 */
         }
 
         #stats {
@@ -52,11 +58,11 @@
         }
         
         #stats span {
-            background-color: #e67e22; /* 주황색 */
+            background-color: #4CAF50; /* 초록색 */
             padding: 10px 15px;
             border-radius: 8px;
             border: 3px solid #000;
-            box-shadow: 4px 4px 0px #8b4513; /* 어두운 갈색 그림자 */
+            box-shadow: 4px 4px 0px #2e7d32; /* 어두운 초록색 그림자 */
             min-width: 120px;
         }
 
@@ -65,7 +71,7 @@
             position: relative;
             width: 100%;
             height: 400px; /* 잠자리가 날아다니는 높이 */
-            background: linear-gradient(to bottom, #ff8c00, #ffd700); /* 주황 ~ 금색의 석양 그라데이션 */
+            background: linear-gradient(to bottom, #87CEEB, #B0E0E6); /* 맑은 여름 하늘 그라데이션 */
             border-radius: 10px;
             overflow: hidden; /* 영역을 벗어나는 잠자리 숨기기 */
             border: 3px solid #000;
@@ -109,7 +115,7 @@
             transform: translate(-50%, -50%);
             font-size: 1.8em;
             color: #ffffff; /* 흰색 */
-            text-shadow: 3px 3px 0 #d32f2f; /* 붉은색 그림자 */
+            text-shadow: 3px 3px 0 #1976d2; /* 파란색 그림자 */
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
             pointer-events: none; /* 메시지가 잠자리 클릭을 방해하지 않도록 설정 */
@@ -125,18 +131,18 @@
             font-family: 'Press Start 2P', sans-serif;
             font-size: 1.2em;
             padding: 15px 30px;
-            background-color: #d32f2f; /* 붉은색 (고추잠자리 느낌) */
+            background-color: #2196F3; /* 파란색 (여름 하늘색) */
             color: white;
             border: 3px solid #000;
             border-radius: 10px;
             cursor: pointer;
-            box-shadow: 6px 6px 0px #8b4513; /* 어두운 갈색 그림자 */
+            box-shadow: 6px 6px 0px #1565c0; /* 어두운 파란색 그림자 */
             transition: all 0.1s ease;
         }
         
         #start-button:active {
             transform: translate(3px, 3px);
-            box-shadow: 3px 3px 0px #8b4513;
+            box-shadow: 3px 3px 0px #1565c0;
         }
 
         #result-message {
@@ -158,7 +164,7 @@
         </header>
 
         <main id="game-area">
-            <p id="catch-message">Catch it!</p>
+            <p id="catch-message">Caught it!</p>
         </main>
 
         <footer id="controls">
@@ -168,7 +174,6 @@
     </div>
 
     <script>
-        // --- DOM 요소 가져오기 ---
         const gameArea = document.getElementById('game-area');
         const scoreDisplay = document.getElementById('score');
         const timerDisplay = document.getElementById('timer');
@@ -176,43 +181,32 @@
         const resultMessage = document.getElementById('result-message');
         const catchMessage = document.getElementById('catch-message');
 
-        // --- 게임 상태 변수 ---
         let score = 0;
         let timeLeft = 20;
-        let gameTimerId = null; // 게임 타이머 setInterval ID
-        let dragonflyGeneratorId = null; // 잠자리 생성 setInterval ID
+        let gameTimerId = null;
+        let dragonflyGeneratorId = null;
         let isGameRunning = false;
 
-        // --- 이벤트 리스너 ---
         startButton.addEventListener('click', startGame);
 
-        /**
-         * 게임을 시작하는 함수
-         */
         function startGame() {
-            if (isGameRunning) return; // 게임이 이미 실행 중이면 아무것도 하지 않음
+            if (isGameRunning) return;
 
-            // 1. 게임 상태 초기화
             isGameRunning = true;
             score = 0;
             timeLeft = 20;
             
-            // 2. UI 초기화
             scoreDisplay.textContent = `Score: ${score}`;
             timerDisplay.textContent = `Time: ${timeLeft}`;
             resultMessage.textContent = '';
-            startButton.style.display = 'none'; // 시작 버튼 숨기기
+            startButton.style.display = 'none';
             
-            // 3. 게임 루프 시작
             gameTimerId = setInterval(updateTimer, 1000);
-            dragonflyGeneratorId = setInterval(createDragonfly, 600); // 잠자리는 조금 더 뜸하게 생성
+            dragonflyGeneratorId = setInterval(createDragonfly, 600);
         }
 
-        /**
-         * 게임 타이머를 업데이트하는 함수
-         */
         function updateTimer() {
-            timeLeft--; // 시간 1초 감소
+            timeLeft--;
             timerDisplay.textContent = `Time: ${timeLeft}`;
 
             if (timeLeft <= 0) {
@@ -220,27 +214,21 @@
             }
         }
         
-        /**
-         * 잠자리를 생성하는 함수
-         */
         function createDragonfly() {
             const dragonfly = document.createElement('div');
             dragonfly.classList.add('dragonfly');
             dragonfly.textContent = '🦟';
 
-            // 잠자리가 날아다니는 속도와 위치를 랜덤으로 설정
-            const randomY = Math.random() * (gameArea.clientHeight - 50); // 게임 영역 높이 안에서 랜덤 Y좌표
-            const randomDuration = Math.random() * 2 + 3; // 3초 ~ 5초 사이의 랜덤한 비행 시간
+            const randomY = Math.random() * (gameArea.clientHeight - 50);
+            const randomDuration = Math.random() * 2 + 3;
 
             dragonfly.style.top = `${randomY}px`;
             dragonfly.style.animationDuration = `${randomDuration}s`;
             
-            // 잠자리 클릭 시 점수 획득 이벤트 추가
             dragonfly.addEventListener('click', catchDragonfly);
 
             gameArea.appendChild(dragonfly);
 
-            // 잠자리가 화면 밖으로 사라지면 DOM에서 제거 (메모리 관리)
             setTimeout(() => {
                 if (dragonfly.parentNode) {
                     dragonfly.remove();
@@ -248,51 +236,36 @@
             }, randomDuration * 1000);
         }
         
-        /**
-         * 잠자리를 클릭했을 때 호출되는 함수
-         * @param {Event} event - 클릭 이벤트 객체
-         */
         function catchDragonfly(event) {
             if (!isGameRunning) return;
 
-            score++; // 점수 1 증가
+            score++;
             scoreDisplay.textContent = `Score: ${score}`;
 
-            showCatchMessage(); // "Catch it!" 메시지 표시
-
-            // 클릭된 잠자리는 즉시 제거
+            showCaughtMessage(); // 함수 이름 변경
             event.target.remove();
         }
 
-        /**
-         * "Catch it!" 메시지를 잠시 보여주는 함수
-         */
-        function showCatchMessage() {
+        // "Caught it!" 메시지를 잠시 보여주는 함수
+        function showCaughtMessage() {
+            catchMessage.textContent = 'Caught it!'; /* 텍스트 변경 */
             catchMessage.style.opacity = '1';
-            // 0.5초 후에 메시지를 다시 투명하게 만듦
             setTimeout(() => {
                 catchMessage.style.opacity = '0';
             }, 500);
         }
 
-        /**
-         * 게임을 종료하는 함수
-         */
         function endGame() {
             isGameRunning = false;
             
-            // 1. 모든 타이머 정지
             clearInterval(gameTimerId);
             clearInterval(dragonflyGeneratorId);
             
-            // 2. 게임 종료 메시지 표시
             resultMessage.textContent = `Your Score: ${score}`;
             
-            // 3. "다시 시작" 버튼 표시
             startButton.textContent = "다시 시작";
             startButton.style.display = 'block';
             
-            // 4. 화면에 남아있는 모든 잠자리 제거
             document.querySelectorAll('.dragonfly').forEach(dragonfly => dragonfly.remove());
         }
     </script>
