@@ -3,27 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦟 잠자리 잡기</title>
+    <title>🐉 잠자리 잡기</title> <head>
     <style>
         /* --- 기본 스타일 및 폰트 설정 --- */
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         body {
-            /* 픽셀아트 여름날 논밭 배경 */
             background-image: url('https://i.imgur.com/example-rice-field-pixelart.png'); /* 여기에 실제 픽셀아트 논밭 이미지 URL을 넣어주세요 */
-            background-size: cover; /* 배경이 화면 전체를 덮도록 */
+            background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
-            background-color: #8ac44a; /* 이미지가 로드되기 전이나 로드 실패 시 보일 기본 배경색 (논밭 녹색) */
+            background-color: #8ac44a;
             
             color: #ffffff;
-            font-family: 'Press Start 2P', sans-serif; /* 도트 느낌의 픽셀 폰트 */
+            font-family: 'Press Start 2P', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden; /* 게임 영역 밖으로 나가는 요소 숨기기 */
+            overflow: hidden;
             text-align: center;
         }
 
@@ -31,11 +30,11 @@
         #game-container {
             width: 90%;
             max-width: 600px;
-            background-color: rgba(60, 179, 113, 0.85); /* 논밭에 어울리는 약간 투명한 녹색 */
+            background-color: rgba(60, 179, 113, 0.85);
             border: 4px solid #000;
-            box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.5); /* 픽셀 아트 느낌의 그림자 */
+            box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.5);
             padding: 20px;
-            border-radius: 15px; /* 약간 둥글게 */
+            border-radius: 15px;
         }
 
         /* --- 상단 정보 바 (제목, 시간, 점수) --- */
@@ -45,10 +44,10 @@
         }
 
         h1 {
-            font-size: 1.5em; /* 제목 크기 */
+            font-size: 1.5em;
             margin: 0 0 15px 0;
             text-shadow: 3px 3px 0 #000;
-            color: #ffeb3b; /* 밝은 노란색 */
+            color: #ffeb3b;
         }
 
         #stats {
@@ -58,11 +57,11 @@
         }
         
         #stats span {
-            background-color: #4CAF50; /* 초록색 */
+            background-color: #4CAF50;
             padding: 10px 15px;
             border-radius: 8px;
             border: 3px solid #000;
-            box-shadow: 4px 4px 0px #2e7d32; /* 어두운 초록색 그림자 */
+            box-shadow: 4px 4px 0px #2e7d32;
             min-width: 120px;
         }
 
@@ -70,28 +69,35 @@
         #game-area {
             position: relative;
             width: 100%;
-            height: 400px; /* 잠자리가 날아다니는 높이 */
-            background: linear-gradient(to bottom, #87CEEB, #B0E0E6); /* 맑은 여름 하늘 그라데이션 */
+            height: 400px;
+            background: linear-gradient(to bottom, #87CEEB, #B0E0E6);
             border-radius: 10px;
-            overflow: hidden; /* 영역을 벗어나는 잠자리 숨기기 */
+            overflow: hidden;
             border: 3px solid #000;
         }
 
-        /* --- 잠자리 스타일 --- */
+        /* --- 잠자리 스타일 (이미지 기반으로 변경) --- */
         .dragonfly {
             position: absolute;
-            font-size: 2em; /* 잠자리 이모지 크기 */
+            width: 50px;  /* 이미지 크기에 맞게 조절 */
+            height: 50px; /* 이미지 크기에 맞게 조절 */
             cursor: pointer;
-            user-select: none; /* 드래그 방지 */
+            user-select: none;
             animation-name: fly;
             animation-timing-function: linear;
-            /* 애니메이션은 JavaScript에서 동적으로 설정 */
         }
+
+        .dragonfly img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated; /* 이미지가 흐려지지 않도록 픽셀아트 스타일 유지 */
+        }
+
 
         /* 날아가는 애니메이션 */
         @keyframes fly {
             from {
-                transform: translate(-50px, 20px) rotate(10deg); /* 왼쪽 위에서 시작 */
+                transform: translate(-60px, 20px) rotate(10deg); /* 왼쪽 밖에서 시작 */
             }
             25% {
                 transform: translate(150px, 100px) rotate(-10deg);
@@ -103,7 +109,7 @@
                 transform: translate(450px, 150px) rotate(-5deg);
             }
             to {
-                transform: translate(650px, 80px) rotate(5deg); /* 화면 오른쪽으로 사라짐 */
+                transform: translate(660px, 80px) rotate(5deg); /* 화면 오른쪽 밖으로 사라짐 */
             }
         }
         
@@ -114,29 +120,29 @@
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 1.8em;
-            color: #ffffff; /* 흰색 */
-            text-shadow: 3px 3px 0 #1976d2; /* 파란색 그림자 */
+            color: #ffffff;
+            text-shadow: 3px 3px 0 #1976d2;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
-            pointer-events: none; /* 메시지가 잠자리 클릭을 방해하지 않도록 설정 */
+            pointer-events: none;
         }
 
         /* --- 하단 컨트롤 영역 (버튼, 결과 메시지) --- */
         #controls {
             margin-top: 20px;
-            height: 60px; /* 버튼과 메시지 공간 확보 */
+            height: 60px;
         }
 
         #start-button {
             font-family: 'Press Start 2P', sans-serif;
             font-size: 1.2em;
             padding: 15px 30px;
-            background-color: #2196F3; /* 파란색 (여름 하늘색) */
+            background-color: #2196F3;
             color: white;
             border: 3px solid #000;
             border-radius: 10px;
             cursor: pointer;
-            box-shadow: 6px 6px 0px #1565c0; /* 어두운 파란색 그림자 */
+            box-shadow: 6px 6px 0px #1565c0;
             transition: all 0.1s ease;
         }
         
@@ -156,7 +162,7 @@
 
     <div id="game-container">
         <header id="info-bar">
-            <h1>🦟 잠자리 잡기</h1>
+            <h1>🐉 잠자리 잡기</h1>
             <div id="stats">
                 <span id="timer">Time: 20</span>
                 <span id="score">Score: 0</span>
@@ -208,47 +214,49 @@
         function updateTimer() {
             timeLeft--;
             timerDisplay.textContent = `Time: ${timeLeft}`;
-
-            if (timeLeft <= 0) {
-                endGame();
-            }
+            if (timeLeft <= 0) endGame();
         }
         
+        /**
+         * 잠자리 이미지를 생성하는 함수
+         */
         function createDragonfly() {
             const dragonfly = document.createElement('div');
             dragonfly.classList.add('dragonfly');
-            dragonfly.textContent = '🦟';
+            
+            // --- 이 부분이 변경되었습니다 ---
+            const img = document.createElement('img');
+            // 무료 픽셀아트 잠자리 이미지 URL (배경이 투명한 png 파일)
+            img.src = 'https://i.imgur.com/8Jg7O1Y.png'; 
+            dragonfly.appendChild(img);
+            // -----------------------------
 
-            const randomY = Math.random() * (gameArea.clientHeight - 50);
+            const randomY = Math.random() * (gameArea.clientHeight - 60); // 이미지 크기만큼 제외
             const randomDuration = Math.random() * 2 + 3;
 
             dragonfly.style.top = `${randomY}px`;
             dragonfly.style.animationDuration = `${randomDuration}s`;
             
             dragonfly.addEventListener('click', catchDragonfly);
-
             gameArea.appendChild(dragonfly);
 
             setTimeout(() => {
-                if (dragonfly.parentNode) {
-                    dragonfly.remove();
-                }
+                if (dragonfly.parentNode) dragonfly.remove();
             }, randomDuration * 1000);
         }
         
         function catchDragonfly(event) {
             if (!isGameRunning) return;
-
             score++;
             scoreDisplay.textContent = `Score: ${score}`;
-
-            showCaughtMessage(); // 함수 이름 변경
-            event.target.remove();
+            showCaughtMessage();
+            
+            // event.target은 img이고, 우리가 지워야 할 것은 부모인 div입니다.
+            event.currentTarget.remove(); 
         }
 
-        // "Caught it!" 메시지를 잠시 보여주는 함수
         function showCaughtMessage() {
-            catchMessage.textContent = 'Caught it!'; /* 텍스트 변경 */
+            catchMessage.textContent = 'Caught it!';
             catchMessage.style.opacity = '1';
             setTimeout(() => {
                 catchMessage.style.opacity = '0';
@@ -257,16 +265,12 @@
 
         function endGame() {
             isGameRunning = false;
-            
             clearInterval(gameTimerId);
             clearInterval(dragonflyGeneratorId);
-            
             resultMessage.textContent = `Your Score: ${score}`;
-            
             startButton.textContent = "다시 시작";
             startButton.style.display = 'block';
-            
-            document.querySelectorAll('.dragonfly').forEach(dragonfly => dragonfly.remove());
+            document.querySelectorAll('.dragonfly').forEach(dfly => dfly.remove());
         }
     </script>
 </body>
